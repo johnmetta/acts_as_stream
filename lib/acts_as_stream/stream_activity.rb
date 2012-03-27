@@ -38,6 +38,11 @@ module ActsAsStream
       rescue
         raise "Cannot translate :object into an instantiated model. Perhaps the model used as the :object in this activity did not have a :to_stream_hash method? The :object value is:\n #{package[:object]}"
       end
+      begin
+        package[:time] = Time.at package[:time].to_i
+      rescue
+        raise "Cannot translate Time given :time value in package of #{package[:time]}"
+      end
       package
     end
 

@@ -9,7 +9,7 @@ describe ActsAsStream::StreamActivity do
     @time = Time.now.to_i
     @valid_options = {:who => @user,
                       :action => "Tested StreamActivity!",
-                      :time => @time,
+                      :time => Time.at(@time),
                       :object => @widget}
     @valid_json = "{\"time\":#{@time},\"who\":{\"user\":{\"id\":#{@user.id}}},\"action\":\"Tested StreamActivity!\",\"object\":{\"widget\":{\"id\":#{@widget.id}}}}"
   end
