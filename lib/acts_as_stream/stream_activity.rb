@@ -27,9 +27,20 @@ module ActsAsStream
     def parse package
       package = JSON.parse(package)
       package.keys.each{|k| package[k.to_sym] = package[k]; package.delete(k)}
-      # Try to cast :who and :object to instances
-      package[:who].keys.each{|k| package[:who] = k.titleize.constantize.find(package[:who][k]["id"].to_i)}
-      package[:object].keys.each{|k| package[:object] = k.titleize.constantize.find(package[:object][k]["id"].to_i)}
+
+      # Try to cast :who and :object to instances, cowardly return nil if the record is not found, because it might have
+      # been deleted from the SQL database and not de-registered from Redis
+      begin
+        package[:who].keys.each{|k| package[:who] = k.titleize.constantize.find(package[:who][k]["id"].to_i)}
+      rescue RecordNotFound
+        return nil
+      end
+
+      begin
+        package[:object].keys.each{|k| package[:object] = k.titleize.constantize.find(package[:object][k]["id"].to_i)}
+      rescue RecordNotFound
+        return nil
+      end
       package[:time] = Time.at package[:time].to_i
       package
     end
