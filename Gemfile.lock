@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    acts_as_stream (0.0.4.alpha.2)
+    acts_as_stream (0.0.4.alpha.3)
       rails (~> 3.1)
       redis
 
