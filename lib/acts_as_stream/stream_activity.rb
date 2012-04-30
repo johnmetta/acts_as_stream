@@ -32,13 +32,13 @@ module ActsAsStream
       # been deleted from the SQL database and not de-registered from Redis
       begin
         package[:who].keys.each{|k| package[:who] = k.titleize.constantize.find(package[:who][k]["id"].to_i)}
-      rescue RecordNotFound
+      rescue ActiveRecord::RecordNotFound
         return nil
       end
 
       begin
         package[:object].keys.each{|k| package[:object] = k.titleize.constantize.find(package[:object][k]["id"].to_i)}
-      rescue RecordNotFound
+      rescue ActiveRecord::RecordNotFound
         return nil
       end
       package[:time] = Time.at package[:time].to_i

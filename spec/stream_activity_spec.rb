@@ -15,9 +15,26 @@ describe ActsAsStream::StreamActivity do
   end
 
   describe "parse" do
+    before :each do
+      invalid_user_id = User.last.id + 1
+      invalid_widget_id = Widget.last.id + 1
+      user_id = @valid_options[:who].id
+      widget_id = @valid_options[:object].id
+      @bad_who = package(@valid_options).gsub("\"id\":#{user_id}", "\"id\":#{invalid_user_id}")
+      @bad_object = package(@valid_options).gsub("\"id\":#{widget_id}", "\"id\":#{invalid_widget_id}")
+    end
     it "should probably parse JSON to a hash with symbol keys" do
       hash = ActsAsStream.parse(package(@valid_options))
       @valid_options.keys.each{|k| hash[k].should == @valid_options[k]}
+    end
+
+    it "should return nil with a RecordNotFound exception" do
+      hash = ActsAsStream.parse(@bad_who)
+      hash.should be_nil
+    end
+    it "should return nil with a RecordNotFound exception" do
+      hash = ActsAsStream.parse(@bad_object)
+      hash.should be_nil
     end
   end
 
@@ -73,6 +90,8 @@ describe ActsAsStream::StreamActivity do
       decode(@user.package(:action => "Tested StreamActivity!", :object => @widget)).should == decode(package(options))
     end
   end
+
+
 
   private
 
