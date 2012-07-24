@@ -62,7 +62,7 @@ module ActsAsStream
 
       def package(options = {})
         options.assert_valid_keys(:action, :object, :ignore_stream_hash_on)
-        options[:who] = self
+        options[:who] ||= self
         options[:time] = Time.now.to_i
         ActsAsStream.package options
       end
