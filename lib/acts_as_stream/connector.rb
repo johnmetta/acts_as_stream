@@ -126,6 +126,9 @@ module ActsAsStream
     def base_key
       "#{ActsAsStream.namespace}:#{ActsAsStream.activity_scope}"
     end
+    def get_recent_activity(count=10)
+      ActsAsStream.redis.mget *((ActsAsStream.count - count)...ActsAsStream.count).to_a.reverse.map{|i| "#{ActsAsStream.base_key}:#{i}"}
+    end
     private
 
     def increment!

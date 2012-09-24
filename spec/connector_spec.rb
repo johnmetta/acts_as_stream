@@ -193,6 +193,18 @@ describe ActsAsStream::Connector do
       ActsAsStream.redis.llen("#{@key}:#{id}:mentions").should be(0)
 
     end
+
+    it "should return a list of recent activity" do
+      key = @user.following_key
+      packages = (1..10).collect{|i| test_package i}
+      packages.each do |p|
+        id = ActsAsStream.register_new_activity! p
+        ActsAsStream.register_mentions! :mentioned_keys => [key], :activity_id => id, :key => @user.mentions_key
+      end
+      ActsAsStream.get_recent_activity(10).should have(10).items
+      ActsAsStream.get_recent_activity(3).should have(3).items
+    end
+
   end
 
   private

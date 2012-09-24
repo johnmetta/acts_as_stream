@@ -1,27 +1,25 @@
-#!/usr/bin/env rake
+# encoding: UTF-8
+require 'rubygems'
 begin
   require 'bundler/setup'
 rescue LoadError
   puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
 end
-begin
-  require 'rdoc/task'
-rescue LoadError
-  require 'rdoc/rdoc'
-  require 'rake/rdoctask'
-  RDoc::Task = Rake::RDocTask
-end
 
-RDoc::Task.new(:rdoc) do |rdoc|
+require 'rake'
+require 'rake/rdoctask'
+
+require 'rspec/core'
+require 'rspec/core/rake_task'
+
+RSpec::Core::RakeTask.new(:spec)
+
+task :default => :spec
+
+Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title    = 'ActsAsStream'
-  rdoc.options << '--line-numbers'
-  rdoc.rdoc_files.include('README.md')
+  rdoc.options << '--line-numbers' << '--inline-source'
+  rdoc.rdoc_files.include('README.rdoc')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
-
-
-
-
-Bundler::GemHelper.install_tasks
-
